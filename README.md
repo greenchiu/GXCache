@@ -1,5 +1,7 @@
 # GXCache
 
+[![Build Status](https://travis-ci.org/greenchiu/GXCache.svg?branch=master)](https://travis-ci.org/greenchiu/GXCache)
+
 GXCache is a lightweight cache component. It releases the data cache in memonry when your App receives memory warning, and lazy-loading when you access your value next time. 
 
 ## Features

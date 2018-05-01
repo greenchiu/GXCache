@@ -1,13 +1,9 @@
 language: objective-c
 osx_image: xcode9.2
-# xcode_project: GXCache.xcodeproj
-# xcode_scheme: GXCache
 
 before_install:
-- brew unlink xctool
-- brew update
-- brew link xctool
+- xcpretty --version
 
 script: 
 #- xctool -project GXCache.xcodeproj -scheme GXCache run-tests -test-sdk iphonesimulator11.2 CODE_SIGNING_REQUIRED=NO
-- xcodebuild clean test -project GXCache.xcworkspace -scheme GXCache -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.2' -configuration Debug -enableCodeCoverage YES | xcpretty
+- xcodebuild clean test -project GXCache.xcodeproj -scheme GXCache -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.2' -configuration Debug -enableCodeCoverage YES | xcpretty
