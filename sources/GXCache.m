@@ -107,7 +107,11 @@ NSString * folderPath() {
 
 - (void)setObject:(id<NSCoding, NSCopying>)object forKey:(NSString *)key
 {
-	if (!object || !key.length) {
+	if (!key.length) {
+		return;
+	}
+	else if (!object) {
+		[self removeObjectForKey:key];
 		return;
 	}
 	
