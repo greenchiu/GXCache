@@ -157,6 +157,7 @@ NSString * folderPath() {
 {
 	__weak typeof(self) weakSelf = self;
 	dispatch_barrier_async(self.queue, ^{
+		weakSelf.usedCapacity -= weakSelf.dictionary[key].dataSize;
 		[weakSelf.dictionary removeObjectForKey:key];
 		[weakSelf.keys removeObject:key];
 	});
@@ -170,6 +171,16 @@ NSString * folderPath() {
 		allKeys = [weakSelf.keys copy];
 	});
 	return allKeys;
+}
+
+- (void)zap
+{
+	__weak typeof(self) weakSelf = self;
+	dispatch_barrier_async(self.queue, ^{
+		weakSelf.usedCapacity = 0;
+		[weakSelf.dictionary removeAllObjects];
+		[weakSelf.keys removeAllObjects];
+	});
 }
 
 #pragma mark -

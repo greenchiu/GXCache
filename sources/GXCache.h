@@ -13,6 +13,7 @@
 - (id<NSCoding, NSCopying>)objectForKey:(NSString *)key;
 - (void)removeObjectForKey:(NSString *)key;
 - (NSSet<NSString *> *)allKeys;
+- (void)zap;
 @property (assign, nonatomic) NSUInteger capacity;
 @property (assign, nonatomic) NSInteger maximunCount;
 @property (readonly, getter=allKeys, nonatomic) NSSet<NSString *> *allKeys;

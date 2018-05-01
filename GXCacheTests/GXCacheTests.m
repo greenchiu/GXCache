@@ -67,5 +67,45 @@
 	XCTAssertNotNil([cache objectForKey:@"About me"]);
 }
 
+- (void)test_capacity
+{
+	GXCache *cache = [GXCache new];
+	cache.capacity = 400;
+	
+	[cache setObject:[self projectDescription] forKey:@"GXCache"];
+	[cache setObject:[self aboutMe] forKey:@"About me"];
+	
+	XCTAssertTrue(cache.allKeys.count == 1);
+	XCTAssertNil([cache objectForKey:@"GXCache"]);
+	XCTAssertNotNil([cache objectForKey:@"About me"]);
+}
+
+- (void)test_removeObject
+{
+	GXCache *cache = [GXCache new];
+	[cache setObject:[self projectDescription] forKey:@"GXCache"];
+	[cache setObject:[self aboutMe] forKey:@"About me"];
+	XCTAssertTrue(cache.allKeys.count == 2);
+	
+	[cache removeObjectForKey:@"GXCache"];
+	XCTAssertNil([cache objectForKey:@"GXCache"]);
+	XCTAssertTrue(cache.allKeys.count == 1);
+	
+	[cache setObject:nil forKey:@"About me"];
+	XCTAssertNil([cache objectForKey:@"About me"]);
+	XCTAssertTrue(cache.allKeys.count == 0);
+}
+
+- (void)test_zap
+{
+	GXCache *cache = [GXCache new];
+	[cache setObject:[self projectDescription] forKey:@"GXCache"];
+	[cache setObject:[self aboutMe] forKey:@"About me"];
+	XCTAssertTrue(cache.allKeys.count == 2);
+	[cache zap];
+	XCTAssertFalse(cache.allKeys.count);
+}
+
+
 
 @end
