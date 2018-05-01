@@ -3,4 +3,9 @@ osx_image: xcode9.2
 # xcode_project: GXCache.xcodeproj
 # xcode_scheme: GXCache
 
+before_install:
+- brew unlink xctool
+- brew update
+- brew install xctool
+
 script: xctool -project GXCache.xcodeproj -scheme GXCache run-tests -test-sdk iphonesimulator11.2 CODE_SIGNING_REQUIRED=NO
