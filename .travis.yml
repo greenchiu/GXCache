@@ -8,4 +8,6 @@ before_install:
 - brew update
 - brew link xctool
 
-script: xctool -project GXCache.xcodeproj -scheme GXCache run-tests -test-sdk iphonesimulator11.2 CODE_SIGNING_REQUIRED=NO
+script: 
+#- xctool -project GXCache.xcodeproj -scheme GXCache run-tests -test-sdk iphonesimulator11.2 CODE_SIGNING_REQUIRED=NO
+- xcodebuild clean test -project GXCache.xcworkspace -scheme GXCache -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.2' -configuration Debug -enableCodeCoverage YES | xcpretty
