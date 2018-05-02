@@ -32,6 +32,16 @@
 			 @"contact me": @"I love to receive your message about iOS Develop or others, please feel free to contact me"};
 }
 
+- (NSString *)newUUID
+{
+	return [NSUUID UUID].UUIDString;
+}
+
+- (NSDictionary *)testDictionary
+{
+	return @{[self newUUID]: [self newUUID]};
+}
+
 - (void)test_GXCache {
 	GXCache *cache = [GXCache new];
 	[cache setObject:[self projectDescription] forKey:@"GXCache"];
@@ -54,7 +64,7 @@
 	}
 }
 
-- (void)test_maxmiumCount
+- (void)test_maxmiumCount_1
 {
 	GXCache *cache = [GXCache new];
 	cache.maximunCount = 1;
@@ -66,6 +76,30 @@
 	XCTAssertNil([cache objectForKey:@"GXCache"]);
 	XCTAssertNotNil([cache objectForKey:@"About me"]);
 }
+
+- (void)test_maxmiumCount_2
+{
+	GXCache *cache = [GXCache new];
+	
+	[cache setObject:[self projectDescription] forKey:@"GXCache"];
+	[cache setObject:[self aboutMe] forKey:@"About me"];
+	[cache setObject:[self testDictionary] forKey:[self newUUID]];
+	[cache setObject:[self testDictionary] forKey:[self newUUID]];
+	[cache setObject:[self testDictionary] forKey:[self newUUID]];
+	[cache setObject:[self testDictionary] forKey:[self newUUID]];
+	[cache setObject:[self testDictionary] forKey:[self newUUID]];
+	[cache setObject:[self testDictionary] forKey:[self newUUID]];
+	
+	XCTAssertTrue(cache.allKeys.count == 8);
+	XCTAssertNotNil([cache objectForKey:@"GXCache"]);
+	XCTAssertNotNil([cache objectForKey:@"About me"]);
+	
+	cache.maximunCount = 2;
+	XCTAssertTrue(cache.allKeys.count == 2);
+	BOOL isEqual = [cache.allKeys isEqualToSet:[NSSet setWithObjects:@"GXCache", @"About me", nil]];
+	XCTAssertTrue(isEqual);
+}
+
 
 - (void)test_capacity
 {
@@ -105,7 +139,5 @@
 	[cache zap];
 	XCTAssertFalse(cache.allKeys.count);
 }
-
-
 
 @end

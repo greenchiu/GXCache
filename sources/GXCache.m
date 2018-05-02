@@ -39,6 +39,7 @@ NSString * folderPath() {
 	self = [super init];
 	if (self) {
 		self.identifier = [NSUUID UUID].UUIDString;
+		self.dataSize = 0;
 	}
 	return self;
 }
@@ -201,7 +202,7 @@ NSString * folderPath() {
 	}
 	
 	if ((self.usedCapacity < self.capacity &&
-		!(count > self.maximunCount && self.maximunCount != NSNotFound))) {
+		 !(count > self.maximunCount && self.maximunCount != NSNotFound))) {
 		return;
 	}
 	
@@ -212,11 +213,13 @@ NSString * folderPath() {
 	NSMutableArray<NSString *> *removeKeys = [NSMutableArray array];
 	NSUInteger reduceCapacity = 0;
 	if (self.maximunCount < count && self.maximunCount != NSNotFound) {
-		while (self.maximunCount < sortedKeys.count && sortedKeys.count > kSaveCountForNodeDuringCleanCache) {
-			[removeKeys addObject:sortedKeys.lastObject];
-			reduceCapacity += self.dictionary[sortedKeys.lastObject].dataSize;
-			[sortedKeys removeLastObject];
-		}
+		
+		NSInteger needRemoveCount = count - self.maximunCount;
+		NSInteger startIndex = count - needRemoveCount;
+		[removeKeys addObjectsFromArray:[sortedKeys subarrayWithRange:NSMakeRange(startIndex, needRemoveCount)]];
+		NSArray<GXCacheNode *> *willRemoveNodes = [self.dictionary objectsForKeys:removeKeys notFoundMarker:[GXCacheNode new]];
+		
+		reduceCapacity = [[willRemoveNodes valueForKeyPath:@"@sum.dataSize"] integerValue];
 	}
 	
 	while (self.usedCapacity - reduceCapacity > self.capacity && sortedKeys.count > kSaveCountForNodeDuringCleanCache) {
