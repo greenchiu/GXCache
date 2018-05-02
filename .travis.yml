@@ -5,8 +5,7 @@ before_install:
 - xcpretty --version
 
 script: 
-#- xctool -project GXCache.xcodeproj -scheme GXCache run-tests -test-sdk iphonesimulator11.2 CODE_SIGNING_REQUIRED=NO
 - xcodebuild clean test -project GXCache.xcodeproj -scheme GXCache -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.2' -configuration Debug -enableCodeCoverage YES | xcpretty
 
 after_success:
-- bash <(curl -s https://codecov.io/bash) -J 'GXCache.m'
+- bash <(curl -s https://codecov.io/bash) -J '^GXCache$'
