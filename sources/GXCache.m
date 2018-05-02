@@ -196,13 +196,17 @@ NSString * folderPath() {
 		return;
 	}
 	
+	if (self.capacity == 0 && self.maximunCount == NSNotFound) {
+		return;
+	}
+	
 	NSUInteger count = self.keys.count;
 	if (count <= kSaveCountForNodeDuringCleanCache) {
 		return;
 	}
 	
-	if ((self.usedCapacity < self.capacity &&
-		 !(count > self.maximunCount && self.maximunCount != NSNotFound))) {
+	if ((self.usedCapacity < self.capacity && self.capacity > 0) &&
+		 !(count > self.maximunCount && self.maximunCount != NSNotFound)) {
 		return;
 	}
 	
@@ -213,7 +217,6 @@ NSString * folderPath() {
 	NSMutableArray<NSString *> *removeKeys = [NSMutableArray array];
 	NSUInteger reduceCapacity = 0;
 	if (self.maximunCount < count && self.maximunCount != NSNotFound) {
-		
 		NSInteger needRemoveCount = count - self.maximunCount;
 		NSInteger startIndex = count - needRemoveCount;
 		[removeKeys addObjectsFromArray:[sortedKeys subarrayWithRange:NSMakeRange(startIndex, needRemoveCount)]];
@@ -222,10 +225,12 @@ NSString * folderPath() {
 		reduceCapacity = [[willRemoveNodes valueForKeyPath:@"@sum.dataSize"] integerValue];
 	}
 	
-	while (self.usedCapacity - reduceCapacity > self.capacity && sortedKeys.count > kSaveCountForNodeDuringCleanCache) {
-		[removeKeys addObject:sortedKeys.lastObject];
-		reduceCapacity += self.dictionary[sortedKeys.lastObject].dataSize;
-		[sortedKeys removeLastObject];
+	if (self.capacity > 0) {
+		while (self.usedCapacity - reduceCapacity > self.capacity && sortedKeys.count > kSaveCountForNodeDuringCleanCache) {
+			[removeKeys addObject:sortedKeys.lastObject];
+			reduceCapacity += self.dictionary[sortedKeys.lastObject].dataSize;
+			[sortedKeys removeLastObject];
+		}
 	}
 	
 	if (!removeKeys.count) {
@@ -253,6 +258,12 @@ NSString * folderPath() {
 - (void)setMaximunCount:(NSInteger)maximunCount
 {
 	_maximunCount = MIN(MAX(kMinimumCount, maximunCount), NSNotFound);
+	[self cleanCacheIfNeed];
+}
+
+- (void)setCapacity:(NSUInteger)capacity
+{
+	_capacity = MAX(0, capacity);
 	[self cleanCacheIfNeed];
 }
 

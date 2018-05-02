@@ -64,6 +64,52 @@
 	}
 }
 
+- (void)test_unlimited
+{
+	GXCache *cache = [GXCache new];
+	cache.capacity = 0;
+	cache.maximunCount = NSNotFound;
+	
+	for (NSInteger index = 0; index < 200; index++) {
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+	}
+	
+	XCTAssertTrue(cache.allKeys.count == 1200);
+	
+	for (NSString *key in cache.allKeys) {
+		XCTAssertNotNil([cache objectForKey:key]);
+	}
+}
+
+- (void)test_measure_unlimited
+{
+	[self measureBlock:^{
+		GXCache *cache = [GXCache new];
+		cache.capacity = 0;
+		cache.maximunCount = NSNotFound;
+		
+		for (NSInteger index = 0; index < 100; index++) {
+			[cache setObject:[self testDictionary] forKey:[self newUUID]];
+			[cache setObject:[self testDictionary] forKey:[self newUUID]];
+			[cache setObject:[self testDictionary] forKey:[self newUUID]];
+			[cache setObject:[self testDictionary] forKey:[self newUUID]];
+			[cache setObject:[self testDictionary] forKey:[self newUUID]];
+			[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		}
+		
+		XCTAssertTrue(cache.allKeys.count == 600);
+		
+		for (NSString *key in cache.allKeys) {
+			XCTAssertNotNil([cache objectForKey:key]);
+		}
+	}];
+}
+
 - (void)test_maxmiumCount_1
 {
 	GXCache *cache = [GXCache new];
@@ -100,8 +146,36 @@
 	XCTAssertTrue(isEqual);
 }
 
+- (void)test_maxmiumCount_3
+{
+	GXCache *cache = [GXCache new];
+	cache.capacity = 0;
+	cache.maximunCount = NSNotFound;
+	
+	for (NSInteger index = 0; index < 100; index++) {
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+	}
+	
+	XCTAssertTrue(cache.allKeys.count == 600);
+	
+	for (NSString *key in cache.allKeys) {
+		XCTAssertNotNil([cache objectForKey:key]);
+	}
+	
+	cache.maximunCount = 300;
+	XCTAssertTrue(cache.allKeys.count == 300);
+	
+	cache.maximunCount = 1;
+	XCTAssertTrue(cache.allKeys.count == 1);
+}
 
-- (void)test_capacity
+
+- (void)test_capacity_1
 {
 	GXCache *cache = [GXCache new];
 	cache.capacity = 400;
@@ -112,6 +186,30 @@
 	XCTAssertTrue(cache.allKeys.count == 1);
 	XCTAssertNil([cache objectForKey:@"GXCache"]);
 	XCTAssertNotNil([cache objectForKey:@"About me"]);
+}
+
+- (void)test_capacity_2
+{
+	GXCache *cache = [GXCache new];
+	cache.capacity = 0;
+	
+	for (NSInteger index = 0; index < 200; index++) {
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+	}
+	
+	XCTAssertTrue(cache.allKeys.count == 1200);
+	
+	for (NSString *key in cache.allKeys) {
+		XCTAssertNotNil([cache objectForKey:key]);
+	}
+	
+	cache.capacity = 1;
+	XCTAssertTrue(cache.allKeys.count == 1);
 }
 
 - (void)test_removeObject
