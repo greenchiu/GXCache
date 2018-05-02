@@ -44,6 +44,9 @@
 
 - (void)test_GXCache {
 	GXCache *cache = [GXCache new];
+	[cache setObject:nil forKey:nil];
+	[cache setObject:nil forKey:@"GXCache"];
+	[cache setObject:[self projectDescription] forKey:@"GXCache"];
 	[cache setObject:[self projectDescription] forKey:@"GXCache"];
 	
 	[cache setObject:[self aboutMe] forKey:@"About me"];
@@ -236,6 +239,29 @@
 	XCTAssertTrue(cache.allKeys.count == 2);
 	[cache zap];
 	XCTAssertFalse(cache.allKeys.count);
+}
+
+- (void)test_receive_memory_warning
+{
+	GXCache *cache = [GXCache new];
+	cache.capacity = 0;
+	cache.maximunCount = NSNotFound;
+	
+	for (NSInteger index = 0; index < 10; index++) {
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+		[cache setObject:[self testDictionary] forKey:[self newUUID]];
+	}
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+	
+	for (NSString *key in cache.allKeys) {
+		XCTAssertNotNil([cache objectForKey:key]);
+	}
 }
 
 @end
