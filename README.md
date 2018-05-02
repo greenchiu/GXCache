@@ -5,6 +5,7 @@ A lightweight cache component.
 [![Build Status](https://travis-ci.org/greenchiu/GXCache.svg?branch=master)](https://travis-ci.org/greenchiu/GXCache)
 [![Support](https://img.shields.io/badge/Platform-iOS-blue.svg)](https://www.apple.com/tw/ios)&nbsp;
 [![Support](https://img.shields.io/badge/Language-ObjC-blue.svg)](https://www.apple.com/tw/ios)&nbsp;
+[![codecov.io](https://codecov.io/github/greenchiu/gxcache/branch/master/graphs/badge.svg)](http://codecov.io/github/greenchiu/gxcache)
 
 GXCache is a lightweight cache component. It releases the data cache in memonry when your App receives memory warning, and lazy-loading when you access your value next time. 
 
