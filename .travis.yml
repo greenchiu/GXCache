@@ -8,4 +8,4 @@ script:
 - xcodebuild clean test -project GXCache.xcodeproj -scheme GXCache -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.2' -configuration Debug -enableCodeCoverage YES | xcpretty
 
 after_success:
-- bash <(curl -s https://codecov.io/bash) -J GXCache
+- bash <(curl -s https://codecov.io/bash) -J sources/
